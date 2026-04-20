@@ -1,31 +1,49 @@
 #pragma once
 #include "tetris.h"
 
-
-class Logic : public Tetris
+class Logic
 {
-
-//private: //Might need later, maybe not, keep in case
-
-
 public:
-	
-	Logic() {}; //Not really needed
-	~Logic() = default; //Not really needed
+    Logic();
 
-	/*
-	Goal for next programming session:
-	- Create Moving Pieces of each one
-	- Create a way to move them down the board (gravity)
-	- Create a way to move them left and right
-	- Create a way to rotate them
-	- Create a way to detect when they have landed and add them to the board array
-	- Create collisions with the walls and other pieces
+    int currentType;
+    int nextType;
 
-	FOLLOW IN EXACT ORDER AS LISTED. . . .
-	*/
+    int pieceX;
+    int pieceY;
 
+    int currentShape[4][4];
 
+    int holdType;
+    bool holdUsed;
 
+    int score;
+    int linesClearedTotal;
+    int highScore;
 
+    // NEW: level system
+    int level;
+    int linesToNextLevel;
+
+    // NEW: 7-bag
+    int bag[7];
+    int bagIndex;
+    void RefillBag();
+    int PullFromBag();
+
+    bool SpawnPiece(int board[20][10]);
+    bool CheckCollisionDown(const int board[20][10]);
+    bool CheckCollisionLeft(const int board[20][10]);
+    bool CheckCollisionRight(const int board[20][10]);
+
+    bool MoveDown(int board[20][10]);
+    void MoveLeft(int board[20][10]);
+    void MoveRight(int board[20][10]);
+    void Rotate(int board[20][10]);
+    void HardDrop(int board[20][10]);
+    void HoldPiece(int board[20][10]);
+    void LockPiece(int board[20][10]);
+    int  ClearLines(int board[20][10]);
+    void LoadHighScore();
+    void SaveHighScore();
 };

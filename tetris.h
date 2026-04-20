@@ -1,18 +1,25 @@
 #pragma once
 #include "raylib.h"
+#include "logic.h"
 #include <iostream>
 #include <string>
 
 #define MAXSIZE_X 30
 #define MAXSIZE_Y 30
-#define BLOCK_SIZE_X 75
-#define BLOCK_SIZE_Y 75
+#define X_STARTING_POS 300.0f
+#define Y_STARTING_POS 100.0f
+#define BLOCK_SIZE_X 100
+#define BLOCK_SIZE_Y 100
+#define CELL 32
+#define GRID_WIDTH 10
+#define GRID_HEIGHT 20
 
 // Grid constants
-constexpr int GRID_WIDTH = 10;
-constexpr int GRID_HEIGHT = 20;
 constexpr int BLOCK_SIZE = 40;
 constexpr float SCALE = 1.5f;
+extern const int TETROMINOES[7][4][4];
+
+class Logic;
 
 class Tetris
 {
@@ -31,12 +38,20 @@ protected:
     int Oblock;
     int Iblock;
 
+
 	//Coordinates for drawing
     float positionX;
     float positionY;
 
 
-	//Texture Inizialization
+    Texture2D borderTexture;
+    Texture2D gridTexture;
+   
+
+
+public:
+
+    //Texture Inizialization
     Texture2D background;
     Texture2D texT;
     Texture2D texZ;
@@ -47,10 +62,26 @@ protected:
     Texture2D texI;
     Texture2D introTexture;
     Texture2D creditsTexture;
-    Texture2D borderTexture;
-    Texture2D gridTexture;
+    Texture2D holdLabel;
+    Texture2D nextLabel;
+    Texture2D blockTextures[7];
+    Texture2D controlsTexture;
 
-public:
+    float cellSize = 32.0f;
+    float gridOriginX = 300;
+    float gridOriginY = 100;
+
+    // sounds
+    Sound sMove;
+    Sound sRotate;
+    Sound sDrop;
+    Sound sClear;
+    Sound sLevelUp;
+    Sound sGameOver;
+
+    // line clear animation
+    void AnimateLineClear(int row);
+
     Tetris()
         : score(0), Tblock(0), Zblock(0), Sblock(0), Lblock(0),
         Jblock(0), Oblock(0), Iblock(0),
@@ -72,7 +103,7 @@ public:
     float getPositionX() const { return positionX; }
     float getPositionY() const { return positionY; }
     Texture2D getBackground() const { return background; }
-
+    int (*getBoard())[10] { return board; }
     // setters
     void setScore(int newScore) { score = newScore; }
     void setTblock(int newTblock) { Tblock = newTblock; }
@@ -93,23 +124,29 @@ public:
     // drawing/text 
     void CreateIntro();
     void CreateCredits();
+    void CreateControls();
     void DrawBackground();
     void DrawPlayfield();
+    void DrawFallingPiece(const Logic& logic);  
+    void DrawBorder();
+    void DrawLockedBlocks();
+    void DrawGhostPiece(const Logic& logic);
+    void DrawNextPiece(const Logic& logic);
+    void DrawBlock(int x, int y, int type);
+    Texture2D GetTextureForType(int type);
+    void DrawHoldPiece(const Logic& logic);
+    void DrawScore(const Logic& logic);
+    void DrawHighScore(const Logic& logic);
+
 
 
     //loaders
-    void loadTblock();
-    void loadZblock();
-    void loadSblock();
-    void loadLblock();
-    void loadJblock();
-    void loadOblock();
-    void loadIblock();
     void loadBorder();
     void loadAllImages();
+    void ClearBoard();
 
 
-        // New
+        
 
     // logic
     int updateScore(int linesCleared);
